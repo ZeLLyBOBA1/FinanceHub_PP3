@@ -12,6 +12,6 @@ SCOPED_CREDS = CREDS.with_scopes(SCOPE)
 GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('financehub')
 
-username_id = SHEET.worksheet('username/id')
+username_id = SHEET.worksheet('userdata')
 data = username_id.get_all_values()
 print(data)
