@@ -140,8 +140,8 @@ def load_entry_page(turn_on_sleep):
 
 
 # SHEET.worksheet('userdata').append_row(['demon228', '6366'])
-found = SHEET.worksheet('userdata').find('huesosik')
-print(found)
-print(SHEET.worksheet('userdata').get_all_values())
+# found = SHEET.worksheet('userdata').find('huesosik')
+# print(found)
+# print(SHEET.worksheet('userdata').get_all_values())
 
-##
+load_entry_page(1)
