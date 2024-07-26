@@ -19,13 +19,14 @@ GSPREAD_CLIENT = gspread.authorize(SCOPED_CREDS)
 SHEET = GSPREAD_CLIENT.open('financehub')
 
 
-username_id = SHEET.worksheet('userdata')
-data = username_id.get_all_values()
+userdata = SHEET.worksheet('userdata')
+data = userdata.get_all_values()
 
 
 sleep = time.sleep
 
-
+username = "username"
+pincode = 1111
 
 #clears console
 def console_clear():
@@ -39,104 +40,113 @@ def print_logo():
 
 
 #loads login page
-def load_login_page(turn_on_sleep):
+def load_login_page():
 
     console_clear()
     print_logo()
-    sleep(1 * turn_on_sleep)
-
+    
     print("You are on login page")
-    sleep(.5 * turn_on_sleep)
     print("Choose an option below:\n")
-    sleep(1 * turn_on_sleep)
-
-    print("(1) - Start login process")
-    sleep(.25 * turn_on_sleep)
-    print("(2) - Go back")
-    sleep(.25 * turn_on_sleep)
+    
+    print("(1) Start login process")
+    print("(2) Go back")
 
     choosenoption = input("\n>> ")
 
     if(choosenoption == "1"):
+
+        console_clear()
+        print_logo()
         username = input("Enter your username: ")
         pincode = input("Enter your pin: ")
+      
+        if(userdata.find(username) != None and pincode == userdata.cell(userdata.find(username).row, userdata.find(username).col + 1).value):
+
+            print("\n-- YOU ARE LOGED IN --")
+            sleep(2)
+
+        else:
+
+            print("Wrong username or pin")
+            sleep(2) 
+            load_login_page()
 
     elif(choosenoption == "2"):
-        load_entry_page(1)
+        load_entry_page()
+
 
     else:
         print("\n-- OPTION OUT OF RANGE --")
-        sleep(2 * turn_on_sleep)
-        load_login_page(0)
+        sleep(2)
+        load_login_page()
 
 
 #loads signup page
-def load_signup_page(turn_on_sleep):
-
+def load_signup_page():
+    
     console_clear()
     print_logo()
-    sleep(1 * turn_on_sleep)
 
     print("You are on signup page")
-    sleep(.5 * turn_on_sleep)
     print("Choose an option below:\n")
-    sleep(1 * turn_on_sleep)
-
-    print("(1) - Start signup process")
-    sleep(.25 * turn_on_sleep)
-    print("(2) - Go back")
-    sleep(.25 * turn_on_sleep)
+    
+    print("(1) Start signup process")
+    print("(2) Go back")
 
     choosenoption = input("\n>> ")
-
+    
     if(choosenoption == "1"):
-        username = input("Create username (8): ")
-        sleep(.5 * turn_on_sleep)
-        print("Your pin is...")
-        sleep(1 * turn_on_sleep)
-        print("5125")
-        sleep(.25 * turn_on_sleep)
-        print("Make sure to write it down")
-        sleep(10)
 
-    elif(choosenoption == "2"):
-        load_entry_page(1)
+        console_clear()
+        print_logo()
+        username = input("Create username (4-8): ")
+        
+        if(len(username) <= 8 and len(username) >= 4):
 
+            if(userdata.find(username) == None):
+                # userdata.append_row([username])
+                pincode = random.randint(1000,9999)
+                print(f"\nYour pin is ==> {pincode}")
+                userdata.append_row([username, pincode])
+                print("\nMake sure to write it down and press 'Enter'")
+                input()
+            else:
+                print("This username is already in use")
+                load_signup_page()
+        else:
+            print("\n-- WRONG USERNAME LENGTH --")
+            sleep(2)
+            load_signup_page()
     else:
         print("\n-- OPTION OUT OF RANGE --")
         sleep(2)
-        load_signup_page(0)
+        load_signup_page()
 
 
 #loads entry (login|signup) page
-def load_entry_page(turn_on_sleep):
+def load_entry_page():
 
     console_clear()
     print_logo()
-    sleep(1 * turn_on_sleep)
 
     print("Welcome to FinanceHub!")
-    time.sleep(.5 * turn_on_sleep)
     print("Choose an option below:\n")
-    sleep(1 * turn_on_sleep)
-
-    print("(1) - Login")
-    sleep(.25 * turn_on_sleep)
-    print("(2) - SignUp")
-    sleep(.25 * turn_on_sleep)
+    
+    print("(1) Login")
+    print("(2) SignUp")
 
     choosenoption = input("\n>> ")
 
     if(choosenoption == "1"):
-        load_login_page(1)
+        load_login_page()
 
     elif(choosenoption == "2"):
-        load_signup_page(1)
+        load_signup_page()
 
     else:
         print("\n-- OPTION OUT OF RANGE --")
         sleep(2)
-        load_entry_page(0)
+        load_entry_page()
 
 
 # SHEET.worksheet('userdata').append_row(['demon228', '6366'])
@@ -144,4 +154,4 @@ def load_entry_page(turn_on_sleep):
 # print(found)
 # print(SHEET.worksheet('userdata').get_all_values())
 
-load_entry_page(1)
+load_entry_page()
