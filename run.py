@@ -203,8 +203,8 @@ def load_main_page():
 
     print(f"Welcome, {username}!")
     print("\n===============================")
-    print(f"\nYour balance is {balance}$")
-    print("\n===============================\n")
+    print(f"Your balance is {balance}$")
+    print("===============================\n")
     print("Choose an option below:\n")
     print("(1) Deposit money    (3) Withdraw money")
     print("(2) Change my pin    (4) Delete my account")
