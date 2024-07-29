@@ -73,7 +73,7 @@ def load_login_page():
         username = input("Enter your username: ")
         pincode = input("Enter your pin: ")
 
-        if (userdata.find(username) is not None and pincode == userdata.cell(userdata.find(username).row, userda.find(username).col + 1).value):
+        if (userdata.find(username) is not None and pincode == userdata.cell(userdata.find(username).row, userdata.find(username).col + 1).value):
 
             username_cell = userdata.cell(userdata.find(username).row, userdata.find(username).col)
             pincode_cell = userdata.cell(userdata.find(username).row, userdata.find(username).col + 1)
