@@ -84,7 +84,7 @@ def load_login_page():
 
         else:
 
-            print("-- WRONG USERNAME OR PIN --")
+            print("\n-- WRONG USERNAME OR PIN --")
             sleep(2) 
             load_login_page()
 
@@ -102,6 +102,10 @@ def load_login_page():
 def load_signup_page():
     global username
     global pincode
+    global balance
+    global username_cell
+    global pincode_cell
+    global balance_cell
     
     console_clear()
     print_logo()
@@ -128,6 +132,12 @@ def load_signup_page():
                 balance = 0
                 print(f"\nYour pin is ==> {pincode}")
                 userdata.append_row([username, pincode , balance])
+                username_cell = userdata.cell(userdata.find(username).row, userdata.find(username).col)
+                pincode_cell = userdata.cell(userdata.find(username).row, userdata.find(username).col + 1)
+                balance_cell = userdata.cell(userdata.find(username).row, userdata.find(username).col + 2)
+                username = username_cell.value
+                pincode = pincode_cell.value
+                balance = balance_cell.value
                 print("\nMake sure to write it down and press 'Enter'")
                 input()
 
@@ -135,6 +145,7 @@ def load_signup_page():
                 load_main_page()
             else:
                 print("This username is already in use")
+                sleep(2)
                 load_signup_page()
         else:
             print("\n-- WRONG USERNAME LENGTH --")
@@ -209,14 +220,6 @@ def load_main_page():
     elif(choosenoption == "4"):
         load_delete_page()
     
-    elif(choosenoption == "404"):
-        print(f"username_cell = {username_cell}")
-        print(f"pincode_cell = {pincode_cell}")
-        print(f"balance_cell = {balance_cell}")
-        print(f"username = {username}")
-        print(f"pincode = {pincode}")
-        print(f"balance = {balance}")
-
     else:
         print("\n-- OPTION OUT OF RANGE --")
         sleep(2)
@@ -224,6 +227,8 @@ def load_main_page():
 
 def load_deposit_page():
     global balance
+    global balance_cell
+    
     
     console_clear()
     print_logo()
@@ -236,7 +241,11 @@ def load_deposit_page():
     print("\n -- PROCESSING OPERATION -- ")
     sleep(2)
 
-    if(balance + abs(int(deposit_amount)) <= 100000000000):
+    if(int(balance) + abs(int(deposit_amount)) <= 100000000000):
+
+        balance = int(balance) + abs(int(deposit_amount))
+        userdata.update_acell(balance_cell.address , balance)
+
         print("\n -- SUCCESS -- ")
         sleep(2)
         load_main_page()
@@ -255,25 +264,139 @@ def load_deposit_page():
 
         else:
             print("\n-- OPTION OUT OF RANGE --")
+            sleep(2)
+            load_main_page()
 
 def load_withdrawal_page():
+    global balance
+    global balance_cell
 
     console_clear()
     print_logo()
+
+    print("\nHow much would you like to withdraw?")
+    withdraw_amount = input("\n>> ")
+
+    if(int(balance) - abs(int(withdraw_amount)) < 0):
+
+        print("\n-- NOT ENOUGH MONEY --")
+
+        print("\nChoose an option below:")
+        print("\n(1) to try again \n\n - or - \n\n(0) to visit main page")
+        choosenoption = input("\n>> ")
+        
+        if(choosenoption == "1"):
+            load_withdrawal_page()
+        
+        elif(choosenoption == "0"):
+            load_main_page()
+
+        else:
+            print("\n-- OPTION OUT OF RANGE --")
+            sleep(2)
+            load_main_page()
+
+    else:
+
+        balance = int(balance) - abs(int(withdraw_amount))
+        userdata.update_acell(balance_cell.address , balance)
+
+        print("\n-- SUCCESS --")
+        sleep(2)
+        load_main_page()
 
 def load_pin_change_page():
+    global pincode
+    global pincode_cell
 
     console_clear()
     print_logo()
+
+    print("\nAre you sure, that you want to change your pin?")
+    print("\nChoose an option below:")
+    print("\n(1) Yes\n\n(0) No")
+    choosenoption = input("\n>> ")
+
+    if(choosenoption == "1"):
+        print("\nContinue..")
+        
+    elif(choosenoption == "0"):
+        load_main_page()
+
+    else:
+        print("\n-- OPTION OUT OF RANGE --")
+        sleep(2)
+        load_pin_change_page()
+
+    console_clear()
+    print_logo()
+
+    print("\nPlease, enter your current pin below:")
+    current_pin = input("\n>> ")
+    
+    if(current_pin == pincode):
+        print("\nPlease enter your new pin:")
+        new_pin = input("\n>> ")
+        userdata.update_acell(pincode_cell.address , new_pin)
+        print("\n-- YOUR PIN WAS CHANGED --")
+        sleep(2)
+        load_main_page()
+
+    else:
+        print("\n--WRONG PIN--")
+        sleep(2)
+        load_main_page()
 
 def load_delete_page():
+    global username
+    global pincode
+    global username_cell
+    global pincode_cell
+    global balance_cell
 
     console_clear()
     print_logo()
 
-# SHEET.worksheet('userdata').append_row(['demon228', '6366'])
-# found = SHEET.worksheet('userdata').find('huesosik')
-# print(found)
-# print(SHEET.worksheet('userdata').get_all_values())
+    print("\nAre you sure, that you want to delete your account?")
+    print("\nChoose an option below:")
+    print("\n(1) Yes\n\n(0) No")
+    choosenoption = input("\n>> ")
+
+    if(choosenoption == "1"):
+        print("\nContinue..")
+        
+    elif(choosenoption == "0"):
+        load_main_page()
+
+    else:
+        print("\n-- OPTION OUT OF RANGE --")
+        sleep(2)
+        load_delete_page()
+
+    console_clear()
+    print_logo()
+
+    print("\nEnter your username:")
+    current_username = input("\n>> ")
+
+    print("\nEnter your pincode:")
+    current_pin = input("\n>> ")
+
+    if(current_username == username and current_pin == pincode):
+
+        userdata.update_acell(balance_cell.address , "")
+        userdata.update_acell(pincode_cell.address , "")
+        userdata.update_acell(username_cell.address , "")
+        
+        print("\n-- YOUR ACCOUNT WAS DELETED --")
+        sleep(2)
+        load_entry_page()
+
+    else:
+
+        print("\n-- WRONG USERNAME OR PIN --")
+        sleep(2)
+        load_delete_page()
+
 
 load_entry_page()
